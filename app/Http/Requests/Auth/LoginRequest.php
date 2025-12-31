@@ -33,6 +33,19 @@ class LoginRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     *
+     * Normalizes the email input to support guest alias.
+     * If the input is 'guest' (case-insensitive), it's converted to the configured guest email address.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'email' => $this->normalizeEmailInput($this->input('email')),
+        ]);
+    }
+
+    /**
      * Attempt to authenticate the request's credentials.
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -81,5 +94,27 @@ class LoginRequest extends FormRequest
     public function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
+    }
+
+    /**
+     * Normalize email input to handle guest alias.
+     *
+     * Converts 'guest' (case-insensitive) to the actual guest email address
+     * from configuration. All other inputs pass through unchanged.
+     */
+    private function normalizeEmailInput(?string $email): string
+    {
+        if ($email === null) {
+            return '';
+        }
+
+        $trimmedEmail = trim($email);
+
+        // Check if input matches 'guest' (case-insensitive)
+        if (strcasecmp($trimmedEmail, 'guest') === 0) {
+            return config('demo.guest_email', 'guest@example.com');
+        }
+
+        return $trimmedEmail;
     }
 }

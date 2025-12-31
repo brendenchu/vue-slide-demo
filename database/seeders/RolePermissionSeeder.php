@@ -101,9 +101,9 @@ class RolePermissionSeeder extends Seeder
     private function createGuestUser(): void
     {
         $guest = User::factory()->create([
-            'name' => 'Guest User',
-            'email' => 'guest@example.com',
-            'password' => bcrypt('guest'),
+            'name' => config('demo.guest_name'),
+            'email' => config('demo.guest_email'),
+            'password' => bcrypt(config('demo.guest_password')),
         ]);
 
         $guest->assignRole(RoleEnum::Guest->value);
