@@ -5,6 +5,7 @@ namespace App\Models\Story;
 use App\Enums\ProjectStatus;
 use App\Models\Account\Team;
 use App\Traits\HasPublicId;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Project extends Model
 {
-    use HasPublicId;
+    use HasFactory, HasPublicId;
 
     /**
      * The attributes that are mass assignable.
