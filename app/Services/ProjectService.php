@@ -9,6 +9,7 @@ use App\Models\Story\Project;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ProjectService
@@ -33,10 +34,15 @@ class ProjectService
      */
     public function setProject(Project|string $project): self
     {
+        if ($project instanceof Project) {
+            $this->project = $project;
+        } else {
+            $this->project = Project::where('public_id', $project)->first();
 
-        $this->project = $project instanceof Project
-            ? $project
-            : Project::where('public_id', $project)->first();
+            if (! $this->project) {
+                Log::warning('Project not found', ['public_id' => $project]);
+            }
+        }
 
         return $this;
     }
@@ -86,6 +92,8 @@ class ProjectService
      * @param  Team  $team  The team to create the project for
      * @param  array  $validated  Optional validated data containing 'name' and 'description'
      * @return Project The newly created project
+     *
+     * @throws Exception If project creation fails
      */
     public function createProject(Team $team, array $validated = []): Project
     {
@@ -96,13 +104,28 @@ class ProjectService
             ];
         }
 
-        // Create new project
-        return $team->projects()->create([
-            'key' => Str::slug($validated['name'] . '-' . Str::random(6)),
-            'label' => $validated['name'],
-            'description' => $validated['description'],
-        ]);
+        try {
+            // Create new project
+            $project = $team->projects()->create([
+                'key' => Str::slug($validated['name'] . '-' . Str::random(6)),
+                'label' => $validated['name'],
+                'description' => $validated['description'],
+            ]);
 
+            Log::info('Project created successfully', [
+                'project_id' => $project->public_id,
+                'team_id' => $team->public_id,
+            ]);
+
+            return $project;
+        } catch (Exception $e) {
+            Log::error('Failed to create project', [
+                'team_id' => $team->public_id,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
     }
 
     /**
@@ -127,20 +150,34 @@ class ProjectService
             collect($this->steps)->map(fn ($step) => $step->value)->toArray()
         )->get();
 
-        // cast each response value  to the correct type
-        $responses->transform(function ($response) {
-            if (is_numeric($response->value)) {
-                // has decimal, cast as float, otherwise cast as int
-                $response->value = str_contains($response->value, '.') ? (float) $response->value : (int) $response->value;
-            } elseif (is_bool($response->value)) {
-                $response->value = true;
-            }
-
-            return $response;
-        });
+        // cast each response value to the correct type
+        $responses->transform(fn ($response) => $this->castResponseValue($response));
 
         // return responses
         return $responses;
+    }
+
+    /**
+     * Cast a response value to its appropriate PHP type.
+     *
+     * Handles automatic type conversion:
+     * - Numeric strings with decimals → float
+     * - Numeric strings without decimals → int
+     * - Boolean values → true
+     *
+     * @param  \App\Models\Story\Response  $response  The response model to cast
+     * @return \App\Models\Story\Response The response with cast value
+     */
+    private function castResponseValue($response)
+    {
+        if (is_numeric($response->value)) {
+            // has decimal, cast as float, otherwise cast as int
+            $response->value = str_contains($response->value, '.') ? (float) $response->value : (int) $response->value;
+        } elseif (is_bool($response->value)) {
+            $response->value = true;
+        }
+
+        return $response;
     }
 
     /**
@@ -193,18 +230,32 @@ class ProjectService
             throw new Exception('No project set.');
         }
 
-        foreach ($responses as $key => $value) {
-            foreach ($this->steps as $step) {
-                if (in_array($key, $step->fields())) {
-                    $this->project->responses()->updateOrCreate([
-                        'step' => $step->value,
-                        'key' => $key,
-                    ], [
-                        'value' => $value,
-                    ]);
-                    break;
+        try {
+            foreach ($responses as $key => $value) {
+                foreach ($this->steps as $step) {
+                    if (in_array($key, $step->fields())) {
+                        $this->project->responses()->updateOrCreate([
+                            'step' => $step->value,
+                            'key' => $key,
+                        ], [
+                            'value' => $value,
+                        ]);
+                        break;
+                    }
                 }
             }
+
+            Log::info('Project responses saved', [
+                'project_id' => $this->project->public_id,
+                'response_count' => count($responses),
+            ]);
+        } catch (Exception $e) {
+            Log::error('Failed to save project responses', [
+                'project_id' => $this->project->public_id,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
         }
     }
 
@@ -225,8 +276,19 @@ class ProjectService
 
         $this->project->status = ProjectStatus::PUBLISHED;
 
-        return $this->project->save();
+        $saved = $this->project->save();
 
+        if ($saved) {
+            Log::info('Project published successfully', [
+                'project_id' => $this->project->public_id,
+            ]);
+        } else {
+            Log::error('Failed to publish project', [
+                'project_id' => $this->project->public_id,
+            ]);
+        }
+
+        return $saved;
     }
 
     /**

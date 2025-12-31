@@ -70,9 +70,11 @@ class PublishStoryController extends Controller
             ->setToken($request->token)
             ->saveLastPosition('complete');
 
-        // send email notification to admin
-        //            Mail::to(config('mail.from.address'))
-        //                ->send(new StoryPublished($tokenService->getToken($project)->user));
+        // TODO: Enable email notifications when mail configuration is ready
+        // This will send an email to the admin when a story is published
+        // Uncomment the following lines and ensure MAIL_* env vars are configured:
+        // Mail::to(config('mail.from.address'))
+        //     ->send(new StoryPublished($tokenService->getToken($project)->user));
 
         // flash success message
         session()->flash('success', 'Your form has been submitted.');

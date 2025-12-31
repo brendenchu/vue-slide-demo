@@ -5,8 +5,19 @@ namespace App\Http\Requests\Story\v1;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Validation for the Intro step of the story form.
+ *
+ * The intro step currently has only one page containing three fields (intro_1, intro_2, intro_3).
+ * The page-based structure allows for future expansion if additional intro pages are needed.
+ */
 class IntroFormRequest extends FormRequest
 {
+    /**
+     * Create a new form request instance.
+     *
+     * @param  int  $page  The page number being validated (currently only page 1 has fields)
+     */
     public function __construct(
         private readonly int $page
     ) {
@@ -24,6 +35,9 @@ class IntroFormRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
+     * Note: Currently only page 1 contains fields for the intro step.
+     * Pages 2+ return empty rules to allow for future expansion without breaking existing code.
+     *
      * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
@@ -34,6 +48,7 @@ class IntroFormRequest extends FormRequest
                 'intro_2' => 'required|string|max:255',
                 'intro_3' => 'required|string|max:255',
             ],
+            // Pages 2+ are reserved for future expansion
             default => [],
         };
     }
