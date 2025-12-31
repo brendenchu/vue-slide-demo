@@ -6,6 +6,7 @@ use App\Interfaces\Uuidable;
 use App\Models\User;
 use App\Traits\HasPublicId;
 use App\Traits\HasSettings;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Token extends Model implements Uuidable
 {
-    use HasPublicId, HasSettings;
+    use HasFactory, HasPublicId, HasSettings;
 
     /**
      * The attributes that are mass assignable.
