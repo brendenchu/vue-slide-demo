@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Story;
 
 use App\Enums\ProjectStep;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProjectResource;
+use App\Http\Resources\Story\ProjectResource;
 use App\Models\Story\Project;
 use App\Services\ProjectService;
 use App\Services\TokenService;

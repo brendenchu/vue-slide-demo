@@ -4,7 +4,7 @@ namespace App\Models\Account;
 
 use App\Models\User;
 use App\Traits\HasPublicId;
-use Database\Factories\ProfileFactory;
+use Database\Factories\Account\ProfileFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

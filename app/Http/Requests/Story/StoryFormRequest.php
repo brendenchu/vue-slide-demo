@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Story;
 
-use App\Http\Requests\Story\v1\IntroFormRequest;
-use App\Http\Requests\Story\v1\SectionAFormRequest;
-use App\Http\Requests\Story\v1\SectionBFormRequest;
-use App\Http\Requests\Story\v1\SectionCFormRequest;
+use App\Http\Requests\Story\Form\IntroFormRequest;
+use App\Http\Requests\Story\Form\SectionAFormRequest;
+use App\Http\Requests\Story\Form\SectionBFormRequest;
+use App\Http\Requests\Story\Form\SectionCFormRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;

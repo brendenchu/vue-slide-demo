@@ -7,7 +7,7 @@ use App\Models\Story\Project;
 use App\Models\User;
 use App\Traits\AcceptsTerms;
 use App\Traits\HasPublicId;
-use Database\Factories\TeamFactory;
+use Database\Factories\Account\TeamFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

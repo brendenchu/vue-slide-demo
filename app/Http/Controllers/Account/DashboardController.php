@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProjectResource;
+use App\Http\Resources\Story\ProjectResource;
 use Inertia\Inertia;
 use Inertia\Response;
 

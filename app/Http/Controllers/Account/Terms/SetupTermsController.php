@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Account\Terms;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TermsResource;
+use App\Http\Resources\Account\TermsResource;
 use App\Services\AccountService;
 use Exception;
 use Illuminate\Http\RedirectResponse;

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\User;
 
-use App\Http\Resources\TokenResource;
+use App\Http\Resources\Story\TokenResource;
 use App\Http\Resources\UserResource;
 use App\Models\Account\Profile;
 use Exception;
