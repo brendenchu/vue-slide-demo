@@ -63,6 +63,7 @@ class ContinueStoryController extends Controller
                 'slug' => $step->slug(),
                 'name' => $step->label(),
             ],
+            'token' => $tokenService->getToken($project)->public_id,
             'position' => $lastPosition,
         ]);
     }
