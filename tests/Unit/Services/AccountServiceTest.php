@@ -39,7 +39,7 @@ it('generates a password with correct length', function () {
     $password = $this->service->generatePassword();
 
     expect($password)->toBeString()
-        ->and(strlen($password))->toBe(12);
+        ->and(strlen($password))->toBe(16);
 });
 
 it('sets user by User instance', function () {
