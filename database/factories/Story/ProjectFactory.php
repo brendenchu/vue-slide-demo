@@ -2,7 +2,7 @@
 
 namespace Database\Factories\Story;
 
-use App\Enums\ProjectStatus;
+use App\Enums\Story\ProjectStatus;
 use App\Models\Account\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

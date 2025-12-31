@@ -11,7 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
 
-class DashboardController extends Controller
+class StoryDashboardController extends Controller
 {
     /**
      * @throws Exception

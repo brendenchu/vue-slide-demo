@@ -2,7 +2,7 @@
 
 namespace App\Models\Story;
 
-use App\Enums\ProjectStatus;
+use App\Enums\Story\ProjectStatus;
 use App\Models\Account\Team;
 use App\Traits\HasPublicId;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

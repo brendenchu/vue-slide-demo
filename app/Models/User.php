@@ -3,7 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Enums\TeamStatus;
+use App\Enums\Account\TeamStatus;
 use App\Models\Account\Profile;
 use App\Models\Account\Team;
 use App\Traits\AcceptsTerms;

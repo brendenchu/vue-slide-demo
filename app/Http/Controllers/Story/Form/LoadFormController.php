@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Story\Form;
 
-use App\Enums\ProjectStep;
+use App\Enums\Story\ProjectStep;
 use App\Http\Resources\Story\ProjectResource;
 use App\Models\Story\Project;
 use App\Services\ProjectService;

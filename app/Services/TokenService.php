@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Enums\ProjectStatus;
+use App\Enums\Story\ProjectStatus;
 use App\Models\Story\Project;
 use App\Models\Story\Token;
 use App\Models\User;

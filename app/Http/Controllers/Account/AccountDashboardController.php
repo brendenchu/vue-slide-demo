@@ -7,7 +7,7 @@ use App\Http\Resources\Story\ProjectResource;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class DashboardController extends Controller
+class AccountDashboardController extends Controller
 {
     public function __invoke(): Response
     {

@@ -2,19 +2,19 @@
 
 use App\Http\Controllers\Story\CompleteStoryController;
 use App\Http\Controllers\Story\ContinueStoryController;
-use App\Http\Controllers\Story\DashboardController;
 use App\Http\Controllers\Story\Form\LoadFormController;
 use App\Http\Controllers\Story\Form\SaveFormController;
 use App\Http\Controllers\Story\NewStoryController;
 use App\Http\Controllers\Story\PublishStoryController;
 use App\Http\Controllers\Story\StoryController;
+use App\Http\Controllers\Story\StoryDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['verified', 'profile', 'team'])
     ->prefix('dashboard')
     ->group(function () {
         // Dashboard
-        Route::get('{project}', DashboardController::class)->name('story.dashboard');
+        Route::get('{project}', StoryDashboardController::class)->name('story.dashboard');
 
     });
 

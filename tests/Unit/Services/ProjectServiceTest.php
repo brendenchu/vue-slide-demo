@@ -1,7 +1,7 @@
 <?php
 
-use App\Enums\ProjectStatus;
-use App\Enums\ProjectStep;
+use App\Enums\Story\ProjectStatus;
+use App\Enums\Story\ProjectStep;
 use App\Models\Account\Team;
 use App\Models\Story\Project;
 use App\Services\ProjectService;

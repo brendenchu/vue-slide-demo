@@ -2,7 +2,7 @@
 
 namespace App\Models\Account;
 
-use App\Enums\TeamStatus;
+use App\Enums\Account\TeamStatus;
 use App\Models\Story\Project;
 use App\Models\User;
 use App\Traits\AcceptsTerms;

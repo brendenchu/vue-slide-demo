@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\User\AdminPasswordResetController;
 use App\Http\Controllers\Admin\User\BrowseUsersController;
 use App\Http\Controllers\Admin\User\ManageUserController;
@@ -15,7 +15,7 @@ Route::middleware('role:admin|super-admin')
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::get('/', DashboardController::class)
+        Route::get('/', AdminDashboardController::class)
             ->name('dashboard');
 
         // User Submodule
