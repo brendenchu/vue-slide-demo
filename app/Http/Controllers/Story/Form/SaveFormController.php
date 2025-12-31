@@ -45,7 +45,12 @@ class SaveFormController extends Controller
                 );
         }
 
-            // flash success message
+        // flash success message
         session()->flash('success', 'Your responses have been saved.');
+
+        return response()->json([
+            'message' => 'Your responses have been saved.',
+            'success' => true,
+        ]);
     }
 }

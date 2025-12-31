@@ -28,6 +28,7 @@ enum Role: string
             self::Admin => 'Admin',
             self::Consultant => 'Consultant',
             self::Client => 'Client',
+            self::Guest => 'Guest',
         };
     }
 }

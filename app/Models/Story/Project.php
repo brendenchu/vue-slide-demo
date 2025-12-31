@@ -101,18 +101,25 @@ class Project extends Model
     }
 
     /**
+     * Get the current user's active token for this project
+     */
+    public function userToken(): HasMany
+    {
+        return $this->tokens()
+            ->where('user_id', auth()->id())
+            ->where('expires_at', '>', now())
+            ->whereNull('revoked_at');
+    }
+
+    /**
      * Get the project's token for the authenticated user
+     *
+     * @deprecated Use userToken() relationship instead for better performance
      */
     public function user_token(): ?string
     {
-        if (! ($tokens = $this->tokens()
-            ->where('user_id', auth()->user()->id)
-            ->where('expires_at', '>', now())
-            ->whereNull('revoked_at')
-            ->first())) {
-            return null;
-        }
+        $token = $this->userToken()->first();
 
-        return $tokens->public_id;
+        return $token?->public_id;
     }
 }

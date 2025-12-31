@@ -140,9 +140,17 @@ class AccountService
 
     /**
      * Get the user by slug.
+     *
+     * @throws Exception
      */
     public function getUserBySlug(string $slug): User
     {
-        return Profile::where('public_id', $slug)->first()->user;
+        $profile = Profile::where('public_id', $slug)->first();
+
+        if (! $profile) {
+            throw new Exception("Profile not found for slug: {$slug}");
+        }
+
+        return $profile->user;
     }
 }

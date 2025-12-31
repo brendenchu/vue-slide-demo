@@ -16,8 +16,7 @@ class ProfileResource extends JsonResource
     {
         return [
             'id' => $this->public_id,
-            'slug' => $this->key,
-            'name' => $this->label,
+            'name' => trim($this->first_name . ' ' . $this->last_name),
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'phone' => $this->phone,

@@ -19,30 +19,31 @@ class BrowseUsersController extends Controller
 
         $validated = $request->validated();
 
-        $query = User::query();
+        // Whitelist allowed sort columns to prevent SQL injection
+        $allowedSortColumns = ['id', 'name', 'email', 'created_at', 'updated_at'];
+        $sortBy = in_array($validated['sort'] ?? 'created_at', $allowedSortColumns)
+            ? $validated['sort'] ?? 'created_at'
+            : 'created_at';
 
-        if (! empty($validated['first_name'])) {
-            $query->whereHas('profile', function ($query) use ($validated) {
-                $query->where('first_name', $validated['first_name']);
-            });
-        }
+        $order = in_array(strtolower($validated['order'] ?? 'asc'), ['asc', 'desc'])
+            ? $validated['order']
+            : 'asc';
 
-        if (! empty($validated['last_name'])) {
-            $query->whereHas('profile', function ($query) use ($validated) {
-                $query->where('last_name', $validated['last_name']);
-            });
-        }
-
-        if (! empty($validated['email'])) {
-            $query->where('email', $validated['email']);
-        }
-
-        $sortBy = $validated['sort'] ?? 'created_at';
-        $order = $validated['order'] ?? 'asc';
         $perPage = $validated['per_page'] ?? 10;
         $page = $request->input('page') ?? 1;
 
-        $users = $query->orderBy($sortBy, $order)
+        $users = User::query()
+            ->when(! empty($validated['first_name']), function ($query) use ($validated) {
+                $query->whereHas('profile', fn ($q) => $q->where('first_name', $validated['first_name']));
+            })
+            ->when(! empty($validated['last_name']), function ($query) use ($validated) {
+                $query->whereHas('profile', fn ($q) => $q->where('last_name', $validated['last_name']));
+            })
+            ->when(! empty($validated['email']), function ($query) use ($validated) {
+                $query->where('email', $validated['email']);
+            })
+            ->with(['profile', 'teams', 'roles', 'permissions'])
+            ->orderBy($sortBy, $order)
             ->paginate($perPage, ['*'], 'page', $page)
             ->withQueryString();
 

@@ -12,7 +12,7 @@ class StoreTeamRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->check();
     }
 
     /**
@@ -23,7 +23,8 @@ class StoreTeamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:255'],
+            'key' => ['nullable', 'string', 'max:255', 'unique:teams,key'],
         ];
     }
 }

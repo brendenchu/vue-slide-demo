@@ -94,11 +94,20 @@ class Team extends Model
      */
     protected static function booted(): void
     {
-        // Create a default team for the user when the user is created.
+        // Set the slug key before the team is created (saves one DB write)
+        static::creating(function (Team $team): void {
+            if (empty($team->key)) {
+                $team->key = Str::slug($team->label);
+            }
+        });
+
+        // Append public_id to key after creation (when public_id is available)
         static::created(function (Team $team): void {
-            // set public id
-            $team->key = Str::slug($team->key . '-' . $team->public_id);
-            $team->save();
+            // Only update if key doesn't already include the public_id
+            if (! Str::contains($team->key, $team->public_id)) {
+                $team->key = Str::slug($team->key . '-' . $team->public_id);
+                $team->saveQuietly(); // Use saveQuietly to avoid triggering events again
+            }
         });
     }
 }

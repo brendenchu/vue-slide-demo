@@ -10,18 +10,26 @@ class UserResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
+     * NOTE: For optimal performance, eager-load these relationships in your controller:
+     * - profile
+     * - teams
+     * - roles
+     * - permissions
+     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {
         return [
-            ...(new ProfileResource($this->profile))->toArray($request),
+            ...(new ProfileResource($this->whenLoaded('profile')))->toArray($request),
             'email' => $this->email,
             'email_verified_at' => $this->email_verified_at,
             'name' => $this->name,
-            'team' => TeamResource::make($this->currentTeam()),
-            'roles' => $this->getRoleNames(),
-            'permissions' => $this->getPermissionsViaRoles()->pluck('name'),
+            'team' => $this->when($this->relationLoaded('teams'), function () {
+                return TeamResource::make($this->currentTeam());
+            }),
+            'roles' => $this->whenLoaded('roles', fn () => $this->getRoleNames()),
+            'permissions' => $this->whenLoaded('permissions', fn () => $this->getPermissionsViaRoles()->pluck('name')),
         ];
     }
 }
