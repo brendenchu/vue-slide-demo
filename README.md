@@ -17,12 +17,14 @@ This application showcases a production-ready implementation of a multi-step for
 ## Tech Stack
 
 ### Backend
+
 - **Laravel 12** - PHP 8.4+
 - **Laravel Sanctum** - API authentication
 - **Spatie Laravel Permission** - Role/permission management
 - **Pest v3** - Testing framework
 
 ### Frontend
+
 - **Vue 3** - Composition API with TypeScript
 - **Inertia.js v2** - SPA routing without building an API
 - **Tailwind CSS v3** - Utility-first CSS
@@ -44,6 +46,7 @@ For comprehensive architecture documentation, see [docs/ARCHITECTURE.md](docs/AR
 ## Development Setup
 
 ### Prerequisites
+
 - PHP 8.4+
 - Composer
 - Node.js 18+
@@ -52,18 +55,21 @@ For comprehensive architecture documentation, see [docs/ARCHITECTURE.md](docs/AR
 ### Installation
 
 1. **Clone and install dependencies:**
+
    ```bash
    composer install
    npm install
    ```
 
 2. **Configure environment:**
+
    ```bash
    cp .env.example .env
    php artisan key:generate
    ```
 
 3. **Run migrations and seed:**
+
    ```bash
    php artisan migrate --seed
    ```
@@ -78,6 +84,7 @@ For comprehensive architecture documentation, see [docs/ARCHITECTURE.md](docs/AR
 ### Development Commands
 
 #### Backend
+
 ```bash
 php artisan test                    # Run all tests
 php artisan test --filter=testName # Run specific tests
@@ -86,6 +93,7 @@ vendor/bin/pint --dirty             # Format only changed files
 ```
 
 #### Frontend
+
 ```bash
 npm run dev         # Start Vite dev server with hot reload
 npm run build       # Build for production
@@ -98,12 +106,12 @@ npm run format      # Format with Prettier
 
 The seeder creates demo accounts with the following credentials:
 
-| Role | Email | Password |
-|------|-------|----------|
-| Guest | guest@example.com | guest |
-| Client | client@example.com | client |
-| Consultant | consultant@example.com | consultant |
-| Admin | admin@example.com | admin |
+| Role        | Email                   | Password    |
+| ----------- | ----------------------- | ----------- |
+| Guest       | guest@example.com       | guest       |
+| Client      | client@example.com      | client      |
+| Consultant  | consultant@example.com  | consultant  |
+| Admin       | admin@example.com       | admin       |
 | Super Admin | super-admin@example.com | super-admin |
 
 **Guest Login Alias:** You can login with just `guest` instead of the full email address (case-insensitive).
@@ -175,6 +183,7 @@ php artisan test --filter=guest_login
 ```
 
 **Test Organization:**
+
 - `tests/Feature/` - Integration tests organized by domain
 - `tests/Unit/` - Unit tests for models, services, enums
 

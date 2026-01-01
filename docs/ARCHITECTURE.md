@@ -64,6 +64,7 @@ app/Models/
 ```
 
 **Why this structure?**
+
 - User is a **core entity** used across all domains → root level
 - Domain entities grouped together → easier to understand relationships
 - Subdomains nested within parent domains → clear hierarchy
@@ -72,15 +73,15 @@ app/Models/
 
 All major application layers follow this same domain organization:
 
-| Layer | Root-Level Items | Domain-Grouped Items |
-|-------|------------------|----------------------|
-| **Models** | User.php | Account/, Story/ |
-| **Controllers** | Controller.php | Account/, Story/, Admin/, Auth/, API/ |
-| **Services** | - | AccountService, ProjectService, TokenService |
-| **Resources** | UserResource.php | Account/, Story/ |
-| **Factories** | UserFactory.php | Account/, Story/ |
-| **Enums** | Role, Permission | Account/, Story/ |
-| **Form Requests** | - | Auth/, Story/Form/, Account/ |
+| Layer             | Root-Level Items | Domain-Grouped Items                         |
+| ----------------- | ---------------- | -------------------------------------------- |
+| **Models**        | User.php         | Account/, Story/                             |
+| **Controllers**   | Controller.php   | Account/, Story/, Admin/, Auth/, API/        |
+| **Services**      | -                | AccountService, ProjectService, TokenService |
+| **Resources**     | UserResource.php | Account/, Story/                             |
+| **Factories**     | UserFactory.php  | Account/, Story/                             |
+| **Enums**         | Role, Permission | Account/, Story/                             |
+| **Form Requests** | -                | Auth/, Story/Form/, Account/                 |
 
 ---
 
@@ -337,13 +338,14 @@ routes/
 
 **Pattern:** `{Domain?}{Action}{Entity}Controller`
 
-| Type | Examples | Notes |
-|------|----------|-------|
-| **Invokable** | `StoryController`, `SaveFormController` | Single-action controllers |
-| **Resource** | `ManageUserController` | Full CRUD operations |
+| Type                | Examples                                                                             | Notes                                                   |
+| ------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| **Invokable**       | `StoryController`, `SaveFormController`                                              | Single-action controllers                               |
+| **Resource**        | `ManageUserController`                                                               | Full CRUD operations                                    |
 | **Domain-prefixed** | `AccountDashboardController`, `AdminDashboardController`, `StoryDashboardController` | When multiple DashboardControllers exist across domains |
 
 **Why domain prefixes for some controllers?**
+
 - When the same controller name appears in multiple domains (e.g., DashboardController)
 - Improves clarity: `Admin\AdminDashboardController` vs `Admin\DashboardController`
 - Prevents ambiguity in stack traces and logs
@@ -385,9 +387,11 @@ routes/
 **Pattern:** `{Concept}` or `{Entity}{Property}`
 
 **Root Level (cross-domain):**
+
 - `Role`, `Permission`
 
 **Domain Level:**
+
 - `TeamStatus` → Account/
 - `ProjectStatus`, `ProjectStep` → Story/
 
@@ -407,6 +411,7 @@ routes/
 **Purpose:** Data structure, relationships, business logic intrinsic to the entity
 
 **Responsibilities:**
+
 - Define database table structure via migrations
 - Define eloquent relationships (`hasMany`, `belongsTo`, etc.)
 - Define attribute casting
@@ -414,6 +419,7 @@ routes/
 - Model events (creating, created, updating, updated, etc.)
 
 **Example:**
+
 ```php
 class Project extends Model
 {
@@ -445,6 +451,7 @@ class Project extends Model
 **Purpose:** HTTP request handling, route-to-service delegation
 
 **Responsibilities:**
+
 - Receive and validate HTTP requests (via Form Requests)
 - Delegate business logic to Services
 - Return Inertia/JSON responses
@@ -453,6 +460,7 @@ class Project extends Model
 **Single Responsibility:** Controllers should be thin - business logic belongs in Services.
 
 **Example:**
+
 ```php
 class NewStoryController extends Controller
 {
@@ -478,6 +486,7 @@ class NewStoryController extends Controller
 **Purpose:** Complex business logic, multi-model orchestration
 
 **Responsibilities:**
+
 - Encapsulate business workflows
 - Coordinate multiple models
 - Handle complex data transformations
@@ -485,6 +494,7 @@ class NewStoryController extends Controller
 - Log important operations
 
 **Fluent Interface Pattern:**
+
 ```php
 $responses = $projectService
     ->setProject($project)
@@ -493,6 +503,7 @@ $responses = $projectService
 ```
 
 **Example:**
+
 ```php
 class ProjectService
 {
@@ -527,12 +538,14 @@ class ProjectService
 **Purpose:** Transform model data for API/frontend consumption
 
 **Responsibilities:**
+
 - Format data for JSON responses
 - Control what attributes are exposed
 - Include related resources
 - Apply business rules to presentation
 
 **Example:**
+
 ```php
 class ProjectResource extends JsonResource
 {
@@ -554,12 +567,14 @@ class ProjectResource extends JsonResource
 **Purpose:** Centralized request validation
 
 **Responsibilities:**
+
 - Define validation rules
 - Define authorization logic
 - Prepare/transform data before validation
 - Custom error messages
 
 **Example:**
+
 ```php
 class LoginRequest extends FormRequest
 {
@@ -585,11 +600,13 @@ class LoginRequest extends FormRequest
 **Purpose:** Define fixed sets of values with behavior
 
 **Responsibilities:**
+
 - Define allowed values
 - Provide helper methods (labels, colors, etc.)
 - Type-safe constants
 
 **Example:**
+
 ```php
 enum ProjectStatus: string
 {
@@ -632,6 +649,7 @@ Frontend components follow the same domain-driven principles as the backend:
    - `Account/`, `Admin/`, `Auth/`, `Story/`
 
 **Naming Convention:**
+
 - Component files: PascalCase (e.g., `PrimaryButton.vue`)
 - Directory names: PascalCase for components (e.g., `Common/`, `Story/`)
 - Barrel exports via `index.ts` for grouped components
@@ -641,16 +659,19 @@ Frontend components follow the same domain-driven principles as the backend:
 Utility functions are organized by purpose and domain:
 
 **General Utilities (root level):**
+
 - `utils/ui.ts` - UI utilities (cn, delay)
 - `utils/format.ts` - Formatting (toMoney, toPercent)
 - `utils/math.ts` - Mathematical operations (add, subtract, multiply, divide)
 - `utils/navigation.ts` - Navigation utilities (back)
 
 **Domain-Specific Utilities:**
+
 - `utils/story/form.ts` - Story form utilities (saveForm, delta, nullifyFields)
 - `utils/story/workflow.ts` - Story workflow utilities (prevNextSteps, completeStory)
 
 **Import Pattern:**
+
 ```typescript
 import { cn, delay } from '@/utils/ui'
 import { toMoney } from '@/utils/format'
@@ -668,12 +689,14 @@ The core feature is a reusable multi-step slide form system built with Vue 3 Com
 3. **UI/** - Reusable UI elements (buttons, indicators)
 
 **Props:**
+
 - `current` - Current page index
 - `pages` - Total number of pages
 - `actions` - Navigation actions (next, previous, submit)
 - `direction` - Animation direction
 
 **Usage:**
+
 ```vue
 <SlideProvider :current="1" :pages="5" :actions="actions">
   <template #page-1>
@@ -734,6 +757,7 @@ When adding a new feature, ask:
 ### File Placement Decision Tree
 
 **Backend:**
+
 ```
 Is it a core entity used across ALL domains?
 ├─ YES → Root level (User, Role, Permission)
@@ -745,6 +769,7 @@ Is it a core entity used across ALL domains?
 ```
 
 **Frontend:**
+
 ```
 Is it a shared UI component used across ALL domains?
 ├─ YES → Components/Common/
@@ -762,6 +787,7 @@ Is it a shared UI component used across ALL domains?
 Before committing new code:
 
 **Backend:**
+
 - [ ] Does the file location match the domain pattern?
 - [ ] Are namespace imports using the correct domain path?
 - [ ] Does the naming follow the established convention?
@@ -771,6 +797,7 @@ Before committing new code:
 - [ ] Are tests organized to match the code structure?
 
 **Frontend:**
+
 - [ ] Is the component in the correct location (Common vs Domain)?
 - [ ] Are imports using `@/` path aliases correctly?
 - [ ] Does the component use PascalCase naming?
@@ -798,10 +825,10 @@ Before committing new code:
 
 ## Version History
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.1 | 2025-12-31 | Added frontend organization (Common components, utils structure, Story/Form rename) |
-| 1.0 | 2025-12-31 | Initial architecture documentation after backend Phase 1 & 2 refactoring |
+| Version | Date       | Changes                                                                             |
+| ------- | ---------- | ----------------------------------------------------------------------------------- |
+| 1.1     | 2025-12-31 | Added frontend organization (Common components, utils structure, Story/Form rename) |
+| 1.0     | 2025-12-31 | Initial architecture documentation after backend Phase 1 & 2 refactoring            |
 
 ---
 
