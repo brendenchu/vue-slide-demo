@@ -27,8 +27,7 @@ it('publishes a project successfully', function (): void {
 
     $this->actingAs($user);
 
-    $response = $this->post(route('story.publish'), [
-        'project' => ['id' => $project->public_id],
+    $response = $this->post(route('story.publish', ['project' => $project]), [
         'token' => $token->public_id,
     ]);
 
@@ -53,8 +52,7 @@ it('saves last position to complete after publishing', function (): void {
 
     $this->actingAs($user);
 
-    $this->post(route('story.publish'), [
-        'project' => ['id' => $project->public_id],
+    $this->post(route('story.publish', ['project' => $project]), [
         'token' => $token->public_id,
     ]);
 
@@ -76,8 +74,7 @@ it('redirects to complete page if project is already published', function (): vo
 
     $this->actingAs($user);
 
-    $response = $this->post(route('story.publish'), [
-        'project' => ['id' => $project->public_id],
+    $response = $this->post(route('story.publish', ['project' => $project]), [
         'token' => $token->public_id,
     ]);
 
@@ -103,8 +100,7 @@ it('redirects to create page when token is invalid', function (): void {
 
     $this->actingAs($user);
 
-    $response = $this->post(route('story.publish'), [
-        'project' => ['id' => $project->public_id],
+    $response = $this->post(route('story.publish', ['project' => $project]), [
         'token' => $token->public_id,
     ]);
 
@@ -124,8 +120,7 @@ it('redirects to create page when token is revoked', function (): void {
 
     $this->actingAs($user);
 
-    $response = $this->post(route('story.publish'), [
-        'project' => ['id' => $project->public_id],
+    $response = $this->post(route('story.publish', ['project' => $project]), [
         'token' => $token->public_id,
     ]);
 

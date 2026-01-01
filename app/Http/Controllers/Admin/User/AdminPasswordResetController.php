@@ -14,7 +14,7 @@ class AdminPasswordResetController extends BaseUserController
      */
     public function __invoke(Profile $profile)
     {
-        $this->setupUser($profile->public_id);
+        $this->setupUser($profile);
 
         // send the password reset link
         $status = Password::sendResetLink(

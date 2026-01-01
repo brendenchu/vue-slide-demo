@@ -19,7 +19,7 @@ class SearchUserController extends BaseUserController
             'email.exists' => 'The user does not exist.',
         ]);
 
-        $this->setupUser($validated['email']);
+        $this->setupUserByIdentifier($validated['email']);
 
         // redirect to the user profile
         return to_route('admin.users.show', $this->user->profile->public_id);

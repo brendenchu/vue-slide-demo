@@ -1,6 +1,8 @@
 <?php
 
 use App\Enums\Role;
+use App\Models\Account\Team;
+use App\Models\Story\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role as SpatieRole;
@@ -16,9 +18,14 @@ beforeEach(function (): void {
 });
 
 it('requires authentication', function (): void {
-    $response = $this->postJson('/form/save-responses', []);
+    // Create a project for the route parameter
+    $team = Team::factory()->create();
+    $project = Project::factory()->create();
+    $project->teams()->attach($team);
 
-    $response->assertUnauthorized();
+    $response = $this->post(route('story.save-responses', ['project' => $project]), []);
+
+    $response->assertRedirect(route('login'));
 });
 
 it('user can be assigned client role', function (): void {

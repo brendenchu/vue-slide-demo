@@ -26,7 +26,7 @@ class ManageUserController extends BaseUserController
      */
     public function show(Profile $profile)
     {
-        $this->setupUser($profile->public_id);
+        $this->setupUser($profile);
 
         return Inertia::render('Admin/ShowUser', [
             'user' => UserResource::make($this->user),
