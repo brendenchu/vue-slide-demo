@@ -146,10 +146,12 @@ it('defaults to intro step when last position has invalid step', function (): vo
         'token' => $token->public_id,
     ]));
 
-    // Expect 500 error due to controller bug (uses ProjectStep::Intro which doesn't exist)
-    // This test documents the current behavior. The controller should use ProjectStep::STEP_ZERO
-    $response->assertStatus(500);
-})->skip('Controller has bug: uses ProjectStep::Intro instead of ProjectStep::STEP_ZERO');
+    $response->assertSuccessful();
+    $response->assertInertia(fn ($page) => $page
+        ->where('position.step', 'intro')
+        ->where('position.page', 1)
+    );
+});
 
 it('bypasses expiration and revocation when checking for published token', function (): void {
     $user = User::factory()->create();
