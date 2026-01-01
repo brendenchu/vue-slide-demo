@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Story;
 
 use App\Http\Controllers\Controller;
+use App\Models\Story\Project;
 use App\Services\ProjectService;
 use App\Services\TokenService;
 use Exception;
@@ -18,6 +19,7 @@ class PublishStoryController extends Controller
      * it will skip publishing and redirect to the completion page with
      * an informational message.
      *
+     * @param  Project  $project  The project instance (route model binding)
      * @param  Request  $request  The HTTP request
      * @param  ProjectService  $projectService  Service for project operations
      * @param  TokenService  $tokenService  Service for token verification
@@ -26,13 +28,14 @@ class PublishStoryController extends Controller
      * @throws Exception If project operations fail
      */
     public function __invoke(
+        Project $project,
         Request $request,
         ProjectService $projectService,
         TokenService $tokenService,
     ): RedirectResponse {
 
-        // set the project, and get the project
-        $project = $projectService->setProject($request->project['id'])->getProject();
+        // set the project in the service
+        $projectService->setProject($project);
 
         // if any of the required fields are missing, flash an error message
         if (! $tokenService->verifyToken($project)) {

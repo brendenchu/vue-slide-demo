@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Story\Form;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Story\StoryFormRequest;
+use App\Models\Story\Project;
 use App\Services\ProjectService;
 use App\Services\TokenService;
 use Exception;
@@ -20,7 +21,8 @@ class SaveFormController extends Controller
      * Guest users can view forms but cannot save responses.
      * All other authenticated users can save their progress.
      *
-     * @param  StoryFormRequest  $request  Validated form data (project, step, token, responses)
+     * @param  Project  $project  The project instance (route model binding)
+     * @param  StoryFormRequest  $request  Validated form data (step, token, responses)
      * @param  ProjectService  $projectService  Service for project operations
      * @param  TokenService  $tokenService  Service for token operations
      * @return RedirectResponse Redirect back to the form
@@ -28,6 +30,7 @@ class SaveFormController extends Controller
      * @throws Exception If project or token operations fail
      */
     public function __invoke(
+        Project $project,
         StoryFormRequest $request,
         ProjectService $projectService,
         TokenService $tokenService,
@@ -41,7 +44,7 @@ class SaveFormController extends Controller
         if (! auth()->user()->hasRole('guest')) {
             // save the validated responses
             $projectService
-                ->setProject($request->project['id'])
+                ->setProject($project)
                 ->setSteps($request->step['id'])
                 ->saveResponses($request->validated());
 

@@ -28,8 +28,8 @@ Route::middleware(['verified', 'terms', 'profile', 'team'])
                 Route::post('/', [NewStoryController::class, 'store'])->name('story.store');
             });
         // Save Responses
-        Route::post('save-responses', SaveFormController::class)->name('story.save-responses');
-        Route::post('publish', PublishStoryController::class)->name('story.publish');
+        Route::post('{project}/save-responses', SaveFormController::class)->name('story.save-responses');
+        Route::post('{project}/publish', PublishStoryController::class)->name('story.publish');
 
         Route::prefix('{project}')
             ->group(function (): void {

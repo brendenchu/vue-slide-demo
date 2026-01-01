@@ -66,7 +66,6 @@
               form.post(
                 route('story.publish', {
                   project: props.project,
-                  token: props.token,
                 })
               )
             }

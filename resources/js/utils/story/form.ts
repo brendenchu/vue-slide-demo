@@ -15,7 +15,7 @@ export function saveForm(
   onSuccess: () => void,
   onError?: () => void
 ) {
-  form.post(route('story.save-responses', options), {
+  form.post(route('story.save-responses', { project: options.project }), {
     preserveScroll: true,
     onSuccess: onSuccess,
     onError: onError,

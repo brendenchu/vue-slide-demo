@@ -42,8 +42,7 @@ it('completes full story workflow from creation to publication', function (): vo
         ->and($token->project_id)->toBe($project->id);
 
     // Step 2: Save responses for intro step
-    $introResponse = $this->post(route('story.save-responses'), [
-        'project' => ['id' => $project->public_id],
+    $introResponse = $this->post(route('story.save-responses', ['project' => $project]), [
         'token' => $token->public_id,
         'step' => ['id' => ProjectStep::STEP_ZERO->value],
         'page' => 1,
@@ -67,8 +66,7 @@ it('completes full story workflow from creation to publication', function (): vo
     ]);
 
     // Step 3: Save responses for section-a (page 1 - booleans)
-    $sectionAResponse = $this->post(route('story.save-responses'), [
-        'project' => ['id' => $project->public_id],
+    $sectionAResponse = $this->post(route('story.save-responses', ['project' => $project]), [
         'token' => $token->public_id,
         'step' => ['id' => ProjectStep::STEP_ONE->value],
         'page' => 1,
@@ -90,8 +88,7 @@ it('completes full story workflow from creation to publication', function (): vo
     expect($project->responses()->count())->toBeGreaterThanOrEqual(3);
 
     // Step 4: Publish the story
-    $publishResponse = $this->post(route('story.publish'), [
-        'project' => ['id' => $project->public_id],
+    $publishResponse = $this->post(route('story.publish', ['project' => $project]), [
         'token' => $token->public_id,
     ]);
 
@@ -128,8 +125,7 @@ it('prevents saving responses for guest users', function (): void {
     $this->actingAs($user);
 
     // Attempt to save responses as guest
-    $response = $this->post(route('story.save-responses'), [
-        'project' => ['id' => $project->public_id],
+    $response = $this->post(route('story.save-responses', ['project' => $project]), [
         'token' => $token->public_id,
         'step' => ['id' => ProjectStep::STEP_ZERO->value],
         'page' => 1,
