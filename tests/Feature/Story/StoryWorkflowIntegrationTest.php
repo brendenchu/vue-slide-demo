@@ -42,7 +42,7 @@ it('completes full story workflow from creation to publication', function (): vo
         ->and($token->project_id)->toBe($project->id);
 
     // Step 2: Save responses for intro step
-    $introResponse = $this->postJson(route('story.save-responses'), [
+    $introResponse = $this->post(route('story.save-responses'), [
         'project' => ['id' => $project->public_id],
         'token' => $token->public_id,
         'step' => ['id' => ProjectStep::STEP_ZERO->value],
@@ -52,11 +52,8 @@ it('completes full story workflow from creation to publication', function (): vo
         'intro_3' => 'Test intro answer 3',
     ]);
 
-    $introResponse->assertSuccessful()
-        ->assertJson([
-            'success' => true,
-            'message' => 'Your responses have been saved.',
-        ]);
+    $introResponse->assertRedirect()
+        ->assertSessionHas('success', 'Your responses have been saved.');
 
     // Verify responses were saved
     $responses = $project->responses()->where('step', ProjectStep::STEP_ZERO->value)->get();
@@ -70,7 +67,7 @@ it('completes full story workflow from creation to publication', function (): vo
     ]);
 
     // Step 3: Save responses for section-a (page 1 - booleans)
-    $sectionAResponse = $this->postJson(route('story.save-responses'), [
+    $sectionAResponse = $this->post(route('story.save-responses'), [
         'project' => ['id' => $project->public_id],
         'token' => $token->public_id,
         'step' => ['id' => ProjectStep::STEP_ONE->value],
@@ -83,7 +80,7 @@ it('completes full story workflow from creation to publication', function (): vo
         'section_a_6' => null,
     ]);
 
-    $sectionAResponse->assertSuccessful();
+    $sectionAResponse->assertRedirect();
 
     // Verify last position updated
     expect($token->fresh()->setting('last_position')['step'])->toBe(ProjectStep::STEP_ONE->value);
@@ -131,7 +128,7 @@ it('prevents saving responses for guest users', function (): void {
     $this->actingAs($user);
 
     // Attempt to save responses as guest
-    $response = $this->postJson(route('story.save-responses'), [
+    $response = $this->post(route('story.save-responses'), [
         'project' => ['id' => $project->public_id],
         'token' => $token->public_id,
         'step' => ['id' => ProjectStep::STEP_ZERO->value],
@@ -141,10 +138,8 @@ it('prevents saving responses for guest users', function (): void {
         'intro_3' => 'Guest answer 3',
     ]);
 
-    $response->assertSuccessful()
-        ->assertJson([
-            'success' => true,
-        ]);
+    $response->assertRedirect()
+        ->assertSessionHas('success', 'Your responses have been saved.');
 
     // Verify no responses were saved to database (guest responses are not persisted)
     expect($project->responses()->count())->toBe(0);

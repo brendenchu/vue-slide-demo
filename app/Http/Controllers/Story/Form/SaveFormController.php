@@ -7,7 +7,7 @@ use App\Http\Requests\Story\StoryFormRequest;
 use App\Services\ProjectService;
 use App\Services\TokenService;
 use Exception;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 /**
  * Save form responses for a story project.
@@ -23,7 +23,7 @@ class SaveFormController extends Controller
      * @param  StoryFormRequest  $request  Validated form data (project, step, token, responses)
      * @param  ProjectService  $projectService  Service for project operations
      * @param  TokenService  $tokenService  Service for token operations
-     * @return JsonResponse Success response with message
+     * @return RedirectResponse Redirect back to the form
      *
      * @throws Exception If project or token operations fail
      */
@@ -31,7 +31,7 @@ class SaveFormController extends Controller
         StoryFormRequest $request,
         ProjectService $projectService,
         TokenService $tokenService,
-    ): JsonResponse {
+    ): RedirectResponse {
 
         /**
          * Guest users are allowed to view and navigate forms,
@@ -57,9 +57,6 @@ class SaveFormController extends Controller
         // flash success message (shown even for guests for better UX)
         session()->flash('success', 'Your responses have been saved.');
 
-        return response()->json([
-            'message' => 'Your responses have been saved.',
-            'success' => true,
-        ]);
+        return back();
     }
 }
