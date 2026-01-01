@@ -2,9 +2,10 @@
 
 namespace App\Models\Story;
 
-use App\Enums\ProjectStatus;
+use App\Enums\Story\ProjectStatus;
 use App\Models\Account\Team;
 use App\Traits\HasPublicId;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Project extends Model
 {
-    use HasPublicId;
+    use HasFactory, HasPublicId;
 
     /**
      * The attributes that are mass assignable.
@@ -26,6 +27,8 @@ class Project extends Model
         'key',
         'label',
         'description',
+        'step',
+        'value',
     ];
 
     /**
@@ -63,7 +66,7 @@ class Project extends Model
      */
     protected static function booted(): void
     {
-        static::creating(function ($model) {
+        static::creating(function ($model): void {
             $model->status = ProjectStatus::DRAFT;
         });
     }
@@ -101,18 +104,25 @@ class Project extends Model
     }
 
     /**
+     * Get the current user's active token for this project
+     */
+    public function userToken(): HasMany
+    {
+        return $this->tokens()
+            ->where('user_id', auth()->id())
+            ->where('expires_at', '>', now())
+            ->whereNull('revoked_at');
+    }
+
+    /**
      * Get the project's token for the authenticated user
+     *
+     * @deprecated Use userToken() relationship instead for better performance
      */
     public function user_token(): ?string
     {
-        if (! ($tokens = $this->tokens()
-            ->where('user_id', auth()->user()->id)
-            ->where('expires_at', '>', now())
-            ->whereNull('revoked_at')
-            ->first())) {
-            return null;
-        }
+        $token = $this->userToken()->first();
 
-        return $tokens->public_id;
+        return $token?->public_id;
     }
 }

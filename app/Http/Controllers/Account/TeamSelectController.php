@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TeamResource;
+use App\Http\Resources\Account\TeamResource;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -22,7 +22,7 @@ class TeamSelectController extends Controller
         }
 
         // iterate through teams and set current if slug matches session
-        $teams->each(function ($team) {
+        $teams->each(function ($team): void {
             $team->current = $team->slug === session('current_team');
         });
 

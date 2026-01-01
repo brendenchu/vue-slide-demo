@@ -2,7 +2,7 @@
   import { Link, useForm } from '@inertiajs/vue3'
   import InputError from '@/Components/Form/FormError.vue'
   import InputField from '@/Components/Form/FormField.vue'
-  import PrimaryButton from '@/Components/PrimaryButton.vue'
+  import PrimaryButton from '@/Components/Common/UI/Buttons/PrimaryButton.vue'
   import InputLabel from '@/Components/Form/FormLabel.vue'
 
   const props = withDefaults(

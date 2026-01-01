@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { Head } from '@inertiajs/vue3'
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-  import PrimaryButton from '@/Components/PrimaryButton.vue'
+  import PrimaryButton from '@/Components/Common/UI/Buttons/PrimaryButton.vue'
   import LookupUserForm from './Partials/LookupUserForm.vue'
 
   const goToCreateUser = () => {

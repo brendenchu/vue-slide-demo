@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Story;
 
-use App\Enums\ProjectStatus;
+use App\Enums\Story\ProjectStatus;
 use App\Http\Controllers\Controller;
 use App\Services\TokenService;
 use Exception;

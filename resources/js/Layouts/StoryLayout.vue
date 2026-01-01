@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import FlashProvider from '@/Components/Flash/FlashProvider.vue'
-  import PageFooter from '@/Components/PageFooter.vue'
-  import PageHeader from '@/Components/PageHeader.vue'
+  import PageFooter from '@/Components/Common/Layout/PageFooter.vue'
+  import PageHeader from '@/Components/Common/Layout/PageHeader.vue'
 
   defineProps<{
     title?: string

@@ -4,7 +4,7 @@
   import { Team } from '@/types'
   import axios from 'axios'
   import { computed, ref } from 'vue'
-  import PrimaryButton from '@/Components/PrimaryButton.vue'
+  import PrimaryButton from '@/Components/Common/UI/Buttons/PrimaryButton.vue'
 
   /**
    * Define the props for the component.

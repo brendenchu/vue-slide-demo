@@ -2,12 +2,13 @@
   import { Head, useForm } from '@inertiajs/vue3'
   import StoryLayout from '@/Layouts/StoryLayout.vue'
   import { Project, ProjectStep } from '@/types'
-  import PrimaryButton from '@/Components/PrimaryButton.vue'
-  import { ProgressBar, ProgressTimeline } from '@/Components/Story/v1/UI'
+  import PrimaryButton from '@/Components/Common/UI/Buttons/PrimaryButton.vue'
+  import { ProgressBar, ProgressTimeline } from '@/Components/Story/Form/UI'
 
   const props = defineProps<{
     project: Project
     step: ProjectStep
+    token: string
     position: {
       step: string
       page: number
@@ -19,9 +20,9 @@
   const loadForm = () => {
     form.get(
       route('story.form', {
-        project: props.project,
+        project: props.project.id,
         step: props.position.step,
-        token: props.project.token,
+        token: props.token,
         page: props.position.page,
       })
     )

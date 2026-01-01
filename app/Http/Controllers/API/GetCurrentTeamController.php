@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TeamResource;
+use App\Http\Resources\Account\TeamResource;
 use App\Models\Account\Team;
 use Illuminate\Http\JsonResponse;
 

@@ -19,7 +19,7 @@ class EnsureTermsAreAccepted
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $accountService = (new AccountService())->setUser($request->user());
+        $accountService = (new AccountService)->setUser($request->user());
 
         // If the user has not accepted the terms, redirect them to the terms page.
         if (! $accountService->hasAcceptedTerms()) {

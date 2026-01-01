@@ -23,6 +23,6 @@ return [
 
     // Guest
     'guest_name' => env('GUEST_NAME', 'Guest User'),
-    'guest_email' => env('GUEST_EMAIL', 'guest'),
+    'guest_email' => env('GUEST_EMAIL', 'guest@example.com'),
     'guest_password' => env('GUEST_PASSWORD', 'guest'),
 ];

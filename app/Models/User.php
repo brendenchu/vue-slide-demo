@@ -3,7 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Enums\TeamStatus;
+use App\Enums\Account\TeamStatus;
 use App\Models\Account\Profile;
 use App\Models\Account\Team;
 use App\Traits\AcceptsTerms;
@@ -79,9 +79,9 @@ class User extends Authenticatable
     /**
      * Get the current team.
      */
-    public function currentTeam(): Team
+    public function currentTeam(): ?Team
     {
-        return $this->teams->firstWhere('key', $this->setting('current_team'));
+        return $this->teams()->where('key', $this->setting('current_team'))->first();
     }
 
     /**
@@ -99,13 +99,13 @@ class User extends Authenticatable
 
             $team_name = $name[0] . "'s Team";
 
-            $user->teams()->create([
+            $team = $user->teams()->create([
                 'key' => Str::slug($team_name),
                 'label' => $team_name,
                 'status' => TeamStatus::ACTIVE,
             ]);
 
-            $user->setSetting('current_team', $user->teams->first()->key);
+            $user->setSetting('current_team', $team->key);
         });
 
         // Delete the user's profile when the user is deleted.

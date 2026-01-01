@@ -6,20 +6,25 @@ use App\Models\Account\Profile;
 use App\Models\Account\Terms\Agreement;
 use App\Models\User;
 use Exception;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AccountService
 {
     /**
-     * The user
+     * The currently active user for this service instance.
      */
     protected User $user;
 
     /**
-     * Set the user.
+     * Set the user by User instance, email, or slug.
+     *
+     * @param  User|string  $identifier  User instance, email address, or profile slug
+     * @return AccountService Fluent interface for method chaining
+     *
+     * @throws Exception If user cannot be found
      */
-    public function setUser(User|string $identifier): AccountService
+    public function setUser(User|string $identifier): self
     {
         $this->user = $identifier instanceof User
             ? $identifier
@@ -33,9 +38,11 @@ class AccountService
     }
 
     /**
-     * Get the project.
+     * Get the currently set user.
      *
-     * @throws Exception
+     * @return User The active user instance
+     *
+     * @throws Exception If no user has been set
      */
     public function getUser(): User
     {
@@ -47,11 +54,15 @@ class AccountService
     }
 
     /**
-     * Set up the terms.
+     * Set up the terms agreement for the current user.
      *
-     * @throws Exception
+     * Creates a new terms agreement record if one doesn't exist for the current version.
+     *
+     * @return Agreement The terms agreement model instance
+     *
+     * @throws Exception If no user has been set
      */
-    public function setupTerms(): Model
+    public function setupTerms(): Agreement
     {
         return $this->getUser()
             ->terms_agreements()
@@ -61,9 +72,10 @@ class AccountService
     }
 
     /**
-     * Accept the terms.
+     * Mark the given terms agreement as accepted.
      *
-     * @throws Exception
+     * @param  Agreement  $terms  The terms agreement to accept
+     * @return bool True if successfully updated
      */
     public function acceptTerms(Agreement $terms): bool
     {
@@ -73,9 +85,11 @@ class AccountService
     }
 
     /**
-     * Check if the user has accepted the terms.
+     * Check if the current user has accepted the current terms version.
      *
-     * @throws Exception
+     * @return bool True if user has accepted current terms
+     *
+     * @throws Exception If no user has been set
      */
     public function hasAcceptedTerms(): bool
     {
@@ -87,9 +101,11 @@ class AccountService
     }
 
     /**
-     * Check if the user has violated the terms.
+     * Check if the current user has violated the current terms version.
      *
-     * @throws Exception
+     * @return bool True if user has violations on record
+     *
+     * @throws Exception If no user has been set
      */
     public function hasViolatedTerms(): bool
     {
@@ -100,9 +116,15 @@ class AccountService
     }
 
     /**
-     * Create a user.
+     * Create a new user with the given validated data.
      *
-     * @throws Exception
+     * Auto-generates a secure password and assigns the specified role.
+     * Also triggers User model events which create profile and default team.
+     *
+     * @param  array  $validated  Must contain: first_name, last_name, email, role
+     * @return User The newly created user instance
+     *
+     * @throws Exception If user creation fails
      */
     public function createUser(array $validated): User
     {
@@ -123,26 +145,45 @@ class AccountService
     }
 
     /**
-     * Generate a password.
+     * Generate a cryptographically secure random password.
+     *
+     * Uses Laravel's Str::random() which is cryptographically secure,
+     * unlike str_shuffle() which is not suitable for security purposes.
+     *
+     * @return string A 16-character random password
      */
     public function generatePassword(): string
     {
-        return substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+'), 0, 12);
+        return Str::random(16);
     }
 
     /**
-     * Get the user by email.
+     * Find a user by email address.
+     *
+     * @param  string  $email  The email address to search for
+     * @return User|null The user if found, null otherwise
      */
-    public function getUserByEmail(string $email): User
+    public function getUserByEmail(string $email): ?User
     {
         return User::where('email', $email)->first();
     }
 
     /**
-     * Get the user by slug.
+     * Find a user by their profile slug (public_id).
+     *
+     * @param  string  $slug  The profile public_id to search for
+     * @return User The user associated with the profile
+     *
+     * @throws Exception If no profile found with the given slug
      */
     public function getUserBySlug(string $slug): User
     {
-        return Profile::where('public_id', $slug)->first()->user;
+        $profile = Profile::where('public_id', $slug)->first();
+
+        if (! $profile) {
+            throw new Exception("Profile not found for slug: {$slug}");
+        }
+
+        return $profile->user;
     }
 }

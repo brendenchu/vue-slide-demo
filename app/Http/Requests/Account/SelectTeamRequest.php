@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Account;
 
+use App\Models\Account\Team;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -12,7 +13,7 @@ class SelectTeamRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return auth()->check();
     }
 
     /**
@@ -23,7 +24,7 @@ class SelectTeamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'team' => ['required', 'exists:' . Team::class . ',key'],
         ];
     }
 }

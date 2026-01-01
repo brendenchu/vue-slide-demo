@@ -4,39 +4,51 @@ namespace App\Http\Controllers\Story\Form;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Story\StoryFormRequest;
+use App\Models\Story\Project;
 use App\Services\ProjectService;
 use App\Services\TokenService;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 
 /**
- * Class SaveResponsesController
+ * Save form responses for a story project.
  */
 class SaveFormController extends Controller
 {
     /**
-     * @throws Exception
+     * Save user responses for a project step.
+     *
+     * Guest users can view forms but cannot save responses.
+     * All other authenticated users can save their progress.
+     *
+     * @param  Project  $project  The project instance (route model binding)
+     * @param  StoryFormRequest  $request  Validated form data (step, token, responses)
+     * @param  ProjectService  $projectService  Service for project operations
+     * @param  TokenService  $tokenService  Service for token operations
+     * @return RedirectResponse Redirect back to the form
+     *
+     * @throws Exception If project or token operations fail
      */
     public function __invoke(
+        Project $project,
         StoryFormRequest $request,
         ProjectService $projectService,
         TokenService $tokenService,
-    ) {
+    ): RedirectResponse {
 
-        // if any of the required fields are missing, flash an error message
-        if (! ($request->has('project') && $request->has('step') && $request->has('token'))) {
-            // flash error message
-            session()->flash('error', 'Invalid form ID or token.');
-        }
-
-        // if the user is not a guest, save the responses
+        /**
+         * Guest users are allowed to view and navigate forms,
+         * but their responses are not persisted to the database.
+         * This allows for demo/preview functionality without data pollution.
+         */
         if (! auth()->user()->hasRole('guest')) {
             // save the validated responses
             $projectService
-                ->setProject($request->project['id'])
+                ->setProject($project)
                 ->setSteps($request->step['id'])
                 ->saveResponses($request->validated());
 
-            // save the last position
+            // save the last position for resume functionality
             $tokenService
                 ->setToken($request->token)
                 ->saveLastPosition(
@@ -45,7 +57,9 @@ class SaveFormController extends Controller
                 );
         }
 
-            // flash success message
+        // flash success message (shown even for guests for better UX)
         session()->flash('success', 'Your responses have been saved.');
+
+        return back();
     }
 }

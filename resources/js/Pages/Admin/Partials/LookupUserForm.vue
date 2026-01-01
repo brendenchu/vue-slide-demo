@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import PrimaryButton from '@/Components/PrimaryButton.vue'
+  import PrimaryButton from '@/Components/Common/UI/Buttons/PrimaryButton.vue'
   import { useForm } from '@inertiajs/vue3'
   import InputLabel from '@/Components/Form/FormLabel.vue'
   import InputField from '@/Components/Form/FormField.vue'

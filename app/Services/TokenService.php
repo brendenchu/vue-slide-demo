@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Enums\ProjectStatus;
+use App\Enums\Story\ProjectStatus;
 use App\Models\Story\Project;
 use App\Models\Story\Token;
 use App\Models\User;
@@ -14,24 +14,31 @@ use Illuminate\Database\Eloquent\Model;
 class TokenService
 {
     /**
-     * The token.
+     * The currently active token for this service instance.
      */
     protected Token $token;
 
     /**
-     * Bypass expiration.
+     * Whether to bypass token expiration checks.
+     *
+     * When true, expired tokens will still be considered valid.
      */
     protected bool $bypassExpiration = false;
 
     /**
-     * Bypass revocation.
+     * Whether to bypass token revocation checks.
+     *
+     * When true, revoked tokens will still be considered valid.
      */
     protected bool $bypassRevocation = false;
 
     /**
-     * Set the token.
+     * Set the active token by instance or public ID.
+     *
+     * @param  Token|string  $token  Token instance or public_id
+     * @return self Fluent interface for method chaining
      */
-    public function setToken(Token|string $token): TokenService
+    public function setToken(Token|string $token): self
     {
         $this->token = $token instanceof Token
             ? $token
@@ -41,7 +48,13 @@ class TokenService
     }
 
     /**
-     * Get the token by project.
+     * Get a token for the given project and user.
+     *
+     * Applies standard filters (revocation, expiration) via setupQuery().
+     *
+     * @param  Project  $project  The project to find token for
+     * @param  User|null  $user  The user (defaults to authenticated user)
+     * @return Token|Model|null The token if found, null otherwise
      */
     public function getToken(Project $project, ?User $user = null): Token|Model|null
     {
@@ -54,7 +67,13 @@ class TokenService
     }
 
     /**
-     * Verify that the token is valid.
+     * Verify that a valid token exists for the project and user.
+     *
+     * More efficient than getToken() when you only need to check existence.
+     *
+     * @param  Project  $project  The project to verify token for
+     * @param  User|null  $user  The user (defaults to authenticated user)
+     * @return bool True if valid token exists, false otherwise
      */
     public function verifyToken(Project $project, ?User $user = null): bool
     {
@@ -67,7 +86,13 @@ class TokenService
     }
 
     /**
-     * Create a token.
+     * Create a new token for the given project and user.
+     *
+     * Token expires after 7 days by default.
+     *
+     * @param  Project  $project  The project to create token for
+     * @param  User|null  $user  The user (defaults to authenticated user)
+     * @return Token The newly created token
      */
     public function createToken(Project $project, ?User $user = null): Token
     {
@@ -81,7 +106,14 @@ class TokenService
     }
 
     /**
-     * @throws Exception
+     * Save the user's last position in the form flow.
+     *
+     * Stores position in both session and token settings for persistence.
+     *
+     * @param  string  $step  The step identifier
+     * @param  int|null  $page  The page number within the step
+     *
+     * @throws Exception If no token has been set
      */
     public function saveLastPosition(string $step, ?int $page = null): void
     {
@@ -102,14 +134,28 @@ class TokenService
         ]);
     }
 
-    public function bypassExpiration(): TokenService
+    /**
+     * Bypass expiration checks for subsequent token queries.
+     *
+     * Useful for administrative operations or token refresh flows.
+     *
+     * @return self Fluent interface for method chaining
+     */
+    public function bypassExpiration(): self
     {
         $this->bypassExpiration = true;
 
         return $this;
     }
 
-    public function bypassRevocation(): TokenService
+    /**
+     * Bypass revocation checks for subsequent token queries.
+     *
+     * Useful for token refresh flows or administrative operations.
+     *
+     * @return self Fluent interface for method chaining
+     */
+    public function bypassRevocation(): self
     {
         $this->bypassRevocation = true;
 
@@ -117,9 +163,18 @@ class TokenService
     }
 
     /**
-     * Set up the token builder query.
+     * Set up the token builder query with optional filters.
+     *
+     * Applies standard query constraints based on current service state:
+     * - Filters by current token if set
+     * - Filters out revoked tokens unless bypass is enabled
+     * - Expiration check is currently disabled
+     *
+     * Changed from private to protected for better testability and extensibility.
+     *
+     * @return Builder Query builder with applied filters
      */
-    private function setupQuery(): Builder
+    protected function setupQuery(): Builder
     {
         $query = Token::query();
 
@@ -152,10 +207,10 @@ class TokenService
 
         return $this->setupQuery()
             ->where('user_id', $user->id)
-            ->when($project, function (Builder $query) use ($project) {
+            ->when($project, function (Builder $query) use ($project): void {
                 $query->where('project_id', $project->id);
             })
-            ->whereHas('project', function (Builder $query) use ($status) {
+            ->whereHas('project', function (Builder $query) use ($status): void {
                 $query->where('status', $status->value);
             })
             ->latest()
@@ -209,13 +264,18 @@ class TokenService
         return $this->token;
     }
 
+    /**
+     * Check if a token exists for the project and user.
+     *
+     * This is an alias for getToken() for better semantic clarity when
+     * checking token existence.
+     *
+     * @param  Project  $project  The project to check
+     * @param  User|null  $user  The user (defaults to authenticated user)
+     * @return Token|Model|null The token if found, null otherwise
+     */
     public function hasToken(Project $project, ?User $user = null): Token|Model|null
     {
-        $user ??= auth()->user();
-
-        return $this->setupQuery()
-            ->where('user_id', $user->id)
-            ->where('project_id', $project->id)
-            ->first();
+        return $this->getToken($project, $user);
     }
 }
