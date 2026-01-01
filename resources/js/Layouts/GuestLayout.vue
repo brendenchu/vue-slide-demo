@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-  import ApplicationLogo from '@/Components/ApplicationLogo.vue'
-  import PageFooter from '@/Components/PageFooter.vue'
+  import ApplicationLogo from '@/Components/Common/UI/ApplicationLogo.vue'
+  import PageFooter from '@/Components/Common/Layout/PageFooter.vue'
 </script>
 
 <template>

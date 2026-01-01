@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import InputError from '@/Components/Form/FormError.vue'
   import InputLabel from '@/Components/Form/FormLabel.vue'
-  import PrimaryButton from '@/Components/PrimaryButton.vue'
+  import PrimaryButton from '@/Components/Common/UI/Buttons/PrimaryButton.vue'
   import InputField from '@/Components/Form/FormField.vue'
   import { useForm } from '@inertiajs/vue3'
   import { ref } from 'vue'

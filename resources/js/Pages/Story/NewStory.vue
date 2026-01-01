@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   import { Head, useForm } from '@inertiajs/vue3'
-  import PrimaryButton from '@/Components/PrimaryButton.vue'
+  import PrimaryButton from '@/Components/Common/UI/Buttons/PrimaryButton.vue'
   import StoryLayout from '@/Layouts/StoryLayout.vue'
 
   const form = useForm({})

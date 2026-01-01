@@ -1,10 +1,10 @@
 <script lang="ts" setup>
   import { ref } from 'vue'
-  import Dropdown from '@/Components/DropdownMenu.vue'
-  import DropdownLink from '@/Components/DropdownLink.vue'
-  import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue'
+  import Dropdown from '@/Components/Common/UI/Navigation/DropdownMenu.vue'
+  import DropdownLink from '@/Components/Common/UI/Navigation/DropdownLink.vue'
+  import ResponsiveNavLink from '@/Components/Common/UI/Navigation/ResponsiveNavLink.vue'
   import FlashProvider from '@/Components/Flash/FlashProvider.vue'
-  import PageFooter from '@/Components/PageFooter.vue'
+  import PageFooter from '@/Components/Common/Layout/PageFooter.vue'
 
   const showingNavigationDropdown = ref(false)
 </script>

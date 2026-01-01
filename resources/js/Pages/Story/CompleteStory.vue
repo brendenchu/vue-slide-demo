@@ -2,7 +2,7 @@
   import { Head, Link } from '@inertiajs/vue3'
   import StoryLayout from '@/Layouts/StoryLayout.vue'
   import { Project, ProjectStep } from '@/types'
-  import PrimaryButton from '@/Components/PrimaryButton.vue'
+  import PrimaryButton from '@/Components/Common/UI/Buttons/PrimaryButton.vue'
   import { ProgressBar, ProgressTimeline } from '@/Components/Story/Form/UI'
   import axios from 'axios'
 

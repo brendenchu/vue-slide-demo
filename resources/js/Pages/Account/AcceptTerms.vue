@@ -2,8 +2,8 @@
   import { ref } from 'vue'
   import { Head, useForm } from '@inertiajs/vue3'
   import StoryLayout from '@/Layouts/StoryLayout.vue'
-  import PrimaryButton from '@/Components/PrimaryButton.vue'
-  import SecondaryButton from '@/Components/SecondaryButton.vue'
+  import PrimaryButton from '@/Components/Common/UI/Buttons/PrimaryButton.vue'
+  import SecondaryButton from '@/Components/Common/UI/Buttons/SecondaryButton.vue'
 
   const props = defineProps<{
     terms: {

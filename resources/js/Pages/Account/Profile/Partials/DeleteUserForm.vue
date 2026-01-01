@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import DangerButton from '@/Components/DangerButton.vue'
+  import DangerButton from '@/Components/Common/UI/Buttons/DangerButton.vue'
   import InputError from '@/Components/Form/FormError.vue'
   import InputLabel from '@/Components/Form/FormLabel.vue'
-  import Modal from '@/Components/ModalComponent.vue'
-  import SecondaryButton from '@/Components/SecondaryButton.vue'
+  import Modal from '@/Components/Common/UI/ModalComponent.vue'
+  import SecondaryButton from '@/Components/Common/UI/Buttons/SecondaryButton.vue'
   import InputField from '@/Components/Form/FormField.vue'
   import { useForm } from '@inertiajs/vue3'
   import { nextTick, ref } from 'vue'
